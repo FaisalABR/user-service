@@ -22,6 +22,7 @@ user-service
     L repositories                   → Contains data access logic for interacting with the database
     L routes                         → Contains API route definitions
     L services                       → Stores the application's core business logic
+    L tests                          → Contains file related to testing application
 ```
 
 ## How to setup
