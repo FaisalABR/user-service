@@ -216,3 +216,273 @@ func TestUserRepository_Update(t *testing.T) {
 
 	})
 }
+
+func TestUserRepository_FindByEmail(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		sqlDB, mock, err := sqlmock.New()
+		require.NoError(t, err)
+		defer sqlDB.Close()
+
+		dialector := postgres.New(postgres.Config{
+			Conn:       sqlDB,
+			DriverName: "postgres",
+		})
+		db, err := gorm.Open(dialector, &gorm.Config{})
+		require.NoError(t, err)
+
+		repo := repositories.NewUserRepository(db)
+
+		email := "faisal@mail.com"
+
+		mock.ExpectQuery(`SELECT \* FROM "users" WHERE email = \$1 ORDER BY "users"."id" LIMIT \$2`).
+			WithArgs(email, 1).
+			WillReturnRows(sqlmock.NewRows([]string{"id", "name", "email"}).AddRow(1, "faisal", "faisal@mail.com"))
+
+		response, err := repo.FindByEmail(context.Background(), email)
+		require.NoError(t, err)
+		assert.NotNil(t, response)
+		assert.Equal(t, email, response.Email)
+
+		if err := mock.ExpectationsWereMet(); err != nil {
+			t.Errorf("unfulfilled expectations: %s", err)
+		}
+	})
+
+	t.Run("failed", func(t *testing.T) {
+		sqlDB, mock, err := sqlmock.New()
+		require.NoError(t, err)
+		defer sqlDB.Close()
+
+		dialector := postgres.New(postgres.Config{
+			Conn:       sqlDB,
+			DriverName: "postgres",
+		})
+		db, err := gorm.Open(dialector, &gorm.Config{})
+		require.NoError(t, err)
+
+		repo := repositories.NewUserRepository(db)
+
+		email := "faisal@mail.com"
+
+		mock.ExpectQuery(`SELECT \* FROM "users" WHERE email = \$1 ORDER BY "users"."id" LIMIT \$2`).
+			WithArgs(email, 1).
+			WillReturnError(errors.New("database error"))
+
+		response, err := repo.FindByEmail(context.Background(), email)
+		require.Error(t, err)
+		assert.Nil(t, response)
+
+		if err := mock.ExpectationsWereMet(); err != nil {
+			t.Errorf("unfulfilled expectations: %s", err)
+		}
+	})
+
+	t.Run("data not found", func(t *testing.T) {
+		sqlDB, mock, err := sqlmock.New()
+		require.NoError(t, err)
+		defer sqlDB.Close()
+
+		dialector := postgres.New(postgres.Config{
+			Conn:       sqlDB,
+			DriverName: "postgres",
+		})
+		db, err := gorm.Open(dialector, &gorm.Config{})
+		require.NoError(t, err)
+
+		repo := repositories.NewUserRepository(db)
+
+		email := "faisal@mail.com"
+
+		mock.ExpectQuery(`SELECT \* FROM "users" WHERE email = \$1 ORDER BY "users"."id" LIMIT \$2`).
+			WithArgs(email, 1).
+			WillReturnError(errors.New("user not found"))
+
+		response, err := repo.FindByEmail(context.Background(), email)
+		require.Error(t, err)
+		assert.Nil(t, response)
+
+		if err := mock.ExpectationsWereMet(); err != nil {
+			t.Errorf("unfulfilled expectations: %s", err)
+		}
+	})
+}
+
+func TestUserRepository_FindByUsername(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		sqlDB, mock, err := sqlmock.New()
+		require.NoError(t, err)
+		defer sqlDB.Close()
+
+		dialector := postgres.New(postgres.Config{
+			Conn:       sqlDB,
+			DriverName: "postgres",
+		})
+		db, err := gorm.Open(dialector, &gorm.Config{})
+		require.NoError(t, err)
+
+		repo := repositories.NewUserRepository(db)
+
+		username := "faisalabu"
+
+		mock.ExpectQuery(`SELECT \* FROM "users" WHERE username = \$1 ORDER BY "users"."id" LIMIT \$2`).
+			WithArgs(username, 1).
+			WillReturnRows(sqlmock.NewRows([]string{"id", "name", "username"}).AddRow(1, "faisal", "faisalabu"))
+
+		response, err := repo.FindByUsername(context.Background(), username)
+		require.NoError(t, err)
+		assert.NotNil(t, response)
+		assert.Equal(t, username, response.Username)
+
+		if err := mock.ExpectationsWereMet(); err != nil {
+			t.Errorf("unfulfilled expectations: %s", err)
+		}
+	})
+
+	t.Run("failed", func(t *testing.T) {
+		sqlDB, mock, err := sqlmock.New()
+		require.NoError(t, err)
+		defer sqlDB.Close()
+
+		dialector := postgres.New(postgres.Config{
+			Conn:       sqlDB,
+			DriverName: "postgres",
+		})
+		db, err := gorm.Open(dialector, &gorm.Config{})
+		require.NoError(t, err)
+
+		repo := repositories.NewUserRepository(db)
+
+		username := "faisalabu"
+
+		mock.ExpectQuery(`SELECT \* FROM "users" WHERE username = \$1 ORDER BY "users"."id" LIMIT \$2`).
+			WithArgs(username, 1).
+			WillReturnError(errors.New("database error"))
+
+		response, err := repo.FindByUsername(context.Background(), username)
+		require.Error(t, err)
+		assert.Nil(t, response)
+
+		if err := mock.ExpectationsWereMet(); err != nil {
+			t.Errorf("unfulfilled expectations: %s", err)
+		}
+	})
+
+	t.Run("data not found", func(t *testing.T) {
+		sqlDB, mock, err := sqlmock.New()
+		require.NoError(t, err)
+		defer sqlDB.Close()
+
+		dialector := postgres.New(postgres.Config{
+			Conn:       sqlDB,
+			DriverName: "postgres",
+		})
+		db, err := gorm.Open(dialector, &gorm.Config{})
+		require.NoError(t, err)
+
+		repo := repositories.NewUserRepository(db)
+
+		username := "faisalabu"
+
+		mock.ExpectQuery(`SELECT \* FROM "users" WHERE username = \$1 ORDER BY "users"."id" LIMIT \$2`).
+			WithArgs(username, 1).
+			WillReturnError(errors.New("user not found"))
+
+		response, err := repo.FindByUsername(context.Background(), username)
+		require.Error(t, err)
+		assert.Nil(t, response)
+
+		if err := mock.ExpectationsWereMet(); err != nil {
+			t.Errorf("unfulfilled expectations: %s", err)
+		}
+	})
+}
+
+func TestUserRepository_FindByUUID(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		sqlDB, mock, err := sqlmock.New()
+		require.NoError(t, err)
+		defer sqlDB.Close()
+
+		dialector := postgres.New(postgres.Config{
+			Conn:       sqlDB,
+			DriverName: "postgres",
+		})
+		db, err := gorm.Open(dialector, &gorm.Config{})
+		require.NoError(t, err)
+
+		repo := repositories.NewUserRepository(db)
+
+		uuid := uuid.New()
+
+		mock.ExpectQuery(`SELECT \* FROM "users" WHERE uuid = \$1 ORDER BY "users"."id" LIMIT \$2`).
+			WithArgs(uuid, 1).
+			WillReturnRows(sqlmock.NewRows([]string{"id", "name", "uuid"}).AddRow(1, "faisal", uuid.String()))
+
+		response, err := repo.FindByUUID(context.Background(), uuid.String())
+		require.NoError(t, err)
+		assert.NotNil(t, response)
+		assert.Equal(t, uuid, response.UUID)
+
+		if err := mock.ExpectationsWereMet(); err != nil {
+			t.Errorf("unfulfilled expectations: %s", err)
+		}
+	})
+
+	t.Run("failed", func(t *testing.T) {
+		sqlDB, mock, err := sqlmock.New()
+		require.NoError(t, err)
+		defer sqlDB.Close()
+
+		dialector := postgres.New(postgres.Config{
+			Conn:       sqlDB,
+			DriverName: "postgres",
+		})
+		db, err := gorm.Open(dialector, &gorm.Config{})
+		require.NoError(t, err)
+
+		repo := repositories.NewUserRepository(db)
+
+		uuid := uuid.New()
+
+		mock.ExpectQuery(`SELECT \* FROM "users" WHERE uuid = \$1 ORDER BY "users"."id" LIMIT \$2`).
+			WithArgs(uuid, 1).
+			WillReturnError(errors.New("database error"))
+
+		response, err := repo.FindByUUID(context.Background(), uuid.String())
+		require.Error(t, err)
+		assert.Nil(t, response)
+
+		if err := mock.ExpectationsWereMet(); err != nil {
+			t.Errorf("unfulfilled expectations: %s", err)
+		}
+	})
+
+	t.Run("data not found", func(t *testing.T) {
+		sqlDB, mock, err := sqlmock.New()
+		require.NoError(t, err)
+		defer sqlDB.Close()
+
+		dialector := postgres.New(postgres.Config{
+			Conn:       sqlDB,
+			DriverName: "postgres",
+		})
+		db, err := gorm.Open(dialector, &gorm.Config{})
+		require.NoError(t, err)
+
+		repo := repositories.NewUserRepository(db)
+
+		uuid := uuid.New()
+
+		mock.ExpectQuery(`SELECT \* FROM "users" WHERE uuid = \$1 ORDER BY "users"."id" LIMIT \$2`).
+			WithArgs(uuid, 1).
+			WillReturnError(errors.New("user not found"))
+
+		response, err := repo.FindByUUID(context.Background(), uuid.String())
+		require.Error(t, err)
+		assert.Nil(t, response)
+
+		if err := mock.ExpectationsWereMet(); err != nil {
+			t.Errorf("unfulfilled expectations: %s", err)
+		}
+	})
+}
