@@ -127,7 +127,7 @@ pipeline {
                 git pull origin "${TARGET_BRANCH}"
             else
                 echo "Directory does not exist. Cloning repository."
-                git clone -b "${TARGET_BRANCH}" git@github.com:FaisalABR/user-service.git "${targetDir}" // diganti dengan URL repository Git (komentar ini nanti dihapus)
+                git clone -b "${TARGET_BRANCH}" git@github.com:FaisalABR/user-service.git "${targetDir}"
                 cd "${targetDir}"
             fi
 
