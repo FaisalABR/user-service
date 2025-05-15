@@ -33,7 +33,6 @@ func TestUserRepository_Register(t *testing.T) {
 		// Create Repository
 		repo := repositories.NewUserRepository(db)
 
-		// Test Data
 		req := &dto.RegisterRequest{
 			Name:            "faisal",
 			Username:        "faisalabu",
