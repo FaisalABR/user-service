@@ -3,7 +3,7 @@ services:
   user-service: # change this to your service name
     container_name: user-service # change this to your service name
     platform: linux/amd64
-    image: faisalabubakarriza/user-service:14 # change this to your image name
+    image: faisalabubakarriza/user-service:16 # change this to your image name
     build:
       context: .
       dockerfile: Dockerfile
