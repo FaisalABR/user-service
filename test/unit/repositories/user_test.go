@@ -65,6 +65,7 @@ func TestUserRepository_Register(t *testing.T) {
 		assert.Equal(t, req.RoleID, response.RoleID)
 		assert.NotEqual(t, uuid.Nil, response.UUID)
 
+		// check all expectations met
 		if err := mock.ExpectationsWereMet(); err != nil {
 			t.Errorf("unfulfilled expectations: %s", err)
 		}
