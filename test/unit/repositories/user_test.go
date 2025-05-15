@@ -457,6 +457,8 @@ func TestUserRepository_FindByUUID(t *testing.T) {
 		}
 	})
 
+	// test
+
 	t.Run("data not found", func(t *testing.T) {
 		sqlDB, mock, err := sqlmock.New()
 		require.NoError(t, err)
