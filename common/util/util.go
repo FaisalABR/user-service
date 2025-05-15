@@ -87,7 +87,7 @@ func BindFromConsul(dest any, endpoint, path string) error {
 	// read remote config
 	err = v.ReadRemoteConfig()
 	if err != nil {
-		logrus.Errorf("failed to read remote: %v", err)
+		logrus.Errorf("failed to read remote config: %v", err)
 		return err
 	}
 
