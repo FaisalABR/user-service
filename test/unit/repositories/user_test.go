@@ -17,7 +17,7 @@ import (
 
 func TestUserRepository_Register(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
-		// Creates SQL Mock
+		// Creates PostgreSQL Mock
 		sqlDB, mock, err := sqlmock.New()
 		require.NoError(t, err)
 		defer sqlDB.Close()
