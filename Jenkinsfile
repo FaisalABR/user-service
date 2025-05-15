@@ -102,11 +102,10 @@ pipeline {
     stage('Commit and Push Changes') {
       steps {
         script {
-          withCredentials([usernamePassword(credentialsId: 'github-credential'usernameVariable:, 'GITHUB_USER', passwordVariable: 'GITHUB_PASS')])
           sh """
           git config --global user.name 'Jenkins CI'
           git config --global user.email 'jenkins@company.com'
-          git remote set-url origin https://${GITHUB_USER}:${GITHUB_PASS}@github.com:FaisalABR/user-service.git // diganti dengan URL repository Git (komentar ini nanti dihapus)
+          git remote set-url origin https://${GITHUB_CREDENTIALS_USR}:${GITHUB_CREDENTIALS_PSW}@github.com:FaisalABR/user-service.git 
           git add docker-compose.yaml
           git commit -m 'Update image version to ${TARGET_BRANCH}-${currentBuild.number} [skip ci]' || echo 'No changes to commit'
           git pull origin ${TARGET_BRANCH} --rebase
